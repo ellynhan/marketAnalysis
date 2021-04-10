@@ -132,3 +132,6 @@ dmypy.json
 *.csv
 *.xlsx
 *.xls
+
+# MAC tmp file
+.DS_Store
