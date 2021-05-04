@@ -26,7 +26,7 @@ dong_list = ['부전2동', '기장읍', '우2동', '부전1동', '범일2동', '
 capabilities = DesiredCapabilities.CHROME
 capabilities["goog:loggingPrefs"] = {"performance": "ALL"}  # chromedriver 75+
 
-driver = webdriver.Chrome(executable_path='chromedriver',
+driver = webdriver.Chrome(executable_path='./chromedriver',
                           desired_capabilities=capabilities,)
 driver.get(url=URL)
 
@@ -72,18 +72,24 @@ def process_browser_logs_for_network_events(logs):
 #     pass
 
 def getAddId(dong):
-  span = driver.find_element_by_xpath ("//div[@class='cell']/span[contains( text( ), '{0}')]".format(dong))
-  div = span.find_element_by_xpath('..').find_element_by_xpath('..').find_element_by_xpath('..').get_attribute("id")
-  print(div)
+    simpleLoc = driver.find_element_by_xpath("//*[@id='adrsList']/li/label/span[contains( text( ), '{0}')]".format(dong))
+    print(simpleLoc.get_attribute("innerText"))
+    print(simpleLoc.get_attribute("innerText") + ": " ,end='', file=out)
+    try:
+        span = driver.find_element_by_xpath ("//div[@class='cell']/span[contains( text( ), '{0}')]".format(dong))
+        div = span.find_element_by_xpath('..').find_element_by_xpath('..').find_element_by_xpath('..').get_attribute("id")
+        print(div, file=out)
+    except:
+        print('NO', file=out)
 
 if __name__ == "__main__":
     # 팝업 제거
     removePopup()
-    
-    for dong in dong_list:
-      searchDong("부산 " + dong)
-      time.sleep(1)
-      dong = dong.replace(" ", "")
-      getAddId(dong)
+    with open("admCd.txt", "wt") as out:
+        for dong in dong_list:
+            searchDong("부산 " + dong)
+            time.sleep(1)
+            dong = dong.replace(" ", "")
+            getAddId(dong)
 
 driver.close()
