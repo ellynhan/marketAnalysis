@@ -139,3 +139,6 @@ dmypy.json
 # chromedrive
 *.exe
 chromedrive
+
+# zip
+.zip
