@@ -141,4 +141,6 @@ dmypy.json
 chromedrive
 
 # zip
-.zip
+*.zip
+
+idpw.txt
