@@ -38,10 +38,6 @@ a {
   visibility: hidden;
 }
 
-#chart-box{
-  padding-top: 30px;
-}
-
 #progress-box{
   padding-top: 40px;
   margin-left:10px;
@@ -62,3 +58,8 @@ a {
   margin-left:38%;
   font-size: 30px;
 }
+
+#result-text{
+  margin-top:25px;
+  margin-bottom: 25px;
+} 
