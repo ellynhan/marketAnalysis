@@ -3,8 +3,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
     <!-- 비동기호출 -->
-    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=INPUT_ID&callback=CALLBACK_FUNCTION"></script>
-    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=INPUT_ID&submodules=geocoder"></script>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=YOUR_CLIENT_ID&callback=CALLBACK_FUNCTION"></script>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=YOUR_CLIENT_ID&submodules=geocoder"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="/stylesheets/style.css">
 
@@ -57,11 +57,7 @@
                 </button>
             </div>
         </div>
-        <div class='row'>
-            <div class="gap-2 d-grid d-md-flex justify-content-md-center">
-                <h3 id="result-text"></h3>
-            </div>
-        </div>
+
         <div id='chart-box' class='row'>
             <canvas id="myChart"></canvas>
         </div>
@@ -142,41 +138,17 @@
                 return alert('Something Wrong!');
             }
     
-            if (response.v2.meta.totalCount === 0) { //검색결과 없으면 결과창 안뜨도록 함.
-                return alert("검색 결과가 없습니다.");
+            if (response.v2.meta.totalCount === 0) {
+                return alert('totalCount' + response.v2.meta.totalCount);
             }else{
                 var info = document.getElementById('result-box');
                 info.style.visibility="visible";
             }
-
-            if (response.v2.meta.totalCount > 1) { //검색결과가 많음. 결과표시 안함.
-                return alert("검색 결과가 많습니다. 더 자세한 주소를 입력해주세요.");
-            }
-            
+    
             var htmlAddresses = [],
                 item = response.v2.addresses[0],
                 point = new naver.maps.Point(item.x, item.y);
-            
-            var addressArray = item.jibunAddress.split(' ');
-            var result;
-
-            if(addressArray.length==1){
-                return alert("검색 범위가 넓습니다. 더 자세한 주소를 입력해주세요.");
-            }else if(addressArray.length>1){
-                result = addressArray[0]+" "+addressArray[1];
-                if(addressArray.length>2){
-                    result = result + " " +addressArray[2];
-                    if(addressArray.length>3){
-                        if(addressArray[3][0]<'0'||addressArray[3][0]>'9')
-                            result = result+" "+addressArray[3];
-                    }
-                }
-            }
-            
-            console.log(result);
-            var resultText = document.getElementById("result-text");
-            resultText.innerText = result;
-
+    
             if (item.roadAddress) {
                 htmlAddresses.push('[도로명 주소] ' + item.roadAddress);
             }
@@ -211,7 +183,6 @@
         });
         var addr = document.getElementById('address');
         var sel  = document.getElementById('select_kind');
-        
         if(cond==0){
             var keyCode = event.keyCode;
             if (keyCode === 13) { // Enter Key
