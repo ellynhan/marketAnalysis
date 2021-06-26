@@ -59,7 +59,11 @@ a {
   font-size: 30px;
 }
 
-#result-text{
+#result-address{
   margin-top:25px;
   margin-bottom: 25px;
 } 
+
+#score-data{
+  display:none;
+}

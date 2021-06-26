@@ -9,7 +9,7 @@ const request = require('request');
 
 router.get('/', function(req, res, next) {
   var basicUrl = 'http://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_ADEMD_INFO&key=';
-  var key = 'INPUT KEY';
+  var key = 'AACE8686-5682-3F85-A55A-C99ABCD9A1EE';
   var domainUrl = '&domain=http://localhost:3000/bound'; //도메인 url 꼭 있어야 작동함. 
   var attrFilter = '&attrFilter=emd_kor_nm:like:';
   var regionCode = "|emd_cd:like:"+"41"; //emd_kor_nm:like:갈산동|emd_cd:like:41
@@ -23,7 +23,7 @@ router.get('/', function(req, res, next) {
     //results[i].properties.fullnm 을 확인해야한다. (ex)부산광역시 금정구 장전동
     //우선 첫번째 값만 이용하자.
     var polygons = results[0].geometry.coordinates[0][0];
-    console.log(poly);
+    console.log(polygons);
   }else{
     console.log(error);
   }
