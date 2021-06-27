@@ -83,6 +83,7 @@
         </div>
     </div>
     <p id="score-data"><%= scores %></p>
+    <p id='detail-data'><%= JSON.stringify(details) %></p>
 </body>
 
 
@@ -98,6 +99,14 @@
     });
     map.setCursor('pointer');
     
+    var myChart = new Chart(
+                document.getElementById('myChart'),
+                {
+                type: 'radar',
+                data: {},
+                options: {}
+                }
+            );
     function searchCoordinateToAddress(latlng) {
         console.log("reverse geocode");
         infoWindow.close();
@@ -136,7 +145,7 @@
         });
     }
     
-    function searchAddressToCoordinate(address) { //geocode
+    function searchAddressToCoordinate(address) { //geocode & actually everything.
         console.log("geocode")
         naver.maps.Service.geocode({
             query: address
@@ -162,21 +171,28 @@
             
             var addressArray = item.jibunAddress.split(' ');
             var result;
+            var gu;
+            var epMyeonDong;
             if(addressArray.length==1){
                 return alert("검색 범위가 넓습니다. 더 자세한 주소를 입력해주세요.");
             }else if(addressArray.length>1){
                 result = addressArray[0]+" "+addressArray[1];
+                epMyeonDong = addressArray[1];
+                gu = addressArray[1];
                 if(addressArray.length>2){
                     result = result + " " +addressArray[2];
+                    epMyeonDong = addressArray[2];
                     if(addressArray.length>3){
-                        if(addressArray[3][0]<'0'||addressArray[3][0]>'9')
+                        if(addressArray[3][0]<'0'||addressArray[3][0]>'9'){
                             result = result+" "+addressArray[3];
+                        }else{
+                            epMyeonDong = addressArray[3];
+                        }
                     }
                 }
             }
             var resultText = document.getElementById("result-address");
             resultText.innerText = result;
-            
             var showScore = document.getElementById('result-score');
             var scores = document.getElementById('score-data').innerText;
             var scoresArray = scores.split(',');
@@ -204,6 +220,73 @@
                 }   
             }
 
+            var eachDetailScores = document.getElementById('detail-data').innerText;
+            eachDetailScores = eachDetailScores.replaceAll('&#34','\"');
+            eachDetailScores = JSON.parse(eachDetailScores);
+            var dataForTargetGraph = eachDetailScores[epMyeonDong];
+            var dataForAvgGraph = eachDetailScores[gu];
+            if(dataForTargetGraph === undefined || dataForTargetGraph.length < 1){
+                info.style.visibility="hidden";
+                return alert("결과가 없습니다.");
+            }
+            for(var i=0; i<dataForTargetGraph.length; i++){
+                dataForTargetGraph[i] = parseInt(dataForTargetGraph[i])%50;
+            }
+            for(var i=0; i<dataForAvgGraph.length; i++){
+                dataForAvgGraph[i] = parseInt(dataForAvgGraph[i])%50;
+            }
+            data = {
+                labels: [
+                '유동인구',
+                '총인구',
+                '구매력',
+                '영어이익',
+                '경쟁업체',
+                ],
+                datasets: [{
+                    label: epMyeonDong,
+                    backgroundColor: 'rgb(255, 99, 132,0.2)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    pointBackgroundColor:'rgb(255,99,132)',
+                    pointBorderColor:'#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(255, 99, 132)',
+                    data: dataForTargetGraph,
+                    fill:true,
+                },{
+                    label: gu+' 평균 상권',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgb(54, 162, 235)',
+                    pointBackgroundColor: 'rgb(54, 162, 235)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(54, 162, 235)',
+                    data: dataForAvgGraph,
+                    fill:true,
+                }]
+            };
+
+            myChart.data = data;
+            myChart.update();
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            ///////////////////////////////////////////////////////////
             if (item.roadAddress) {
                 htmlAddresses.push('[도로명 주소] ' + item.roadAddress);
             }
@@ -329,47 +412,4 @@
         var info = document.getElementById('result-box');
         info.style.visibility="hidden";
     }
-</script>
-
-<script id='result-chart'>
-    const data = {
-        labels: [
-        '유동인구',
-        '총인구',
-        '구매력',
-        '영어이익',
-        '경쟁업체',
-        ],
-        datasets: [{
-            label: '장전1동',
-            backgroundColor: 'rgb(255, 99, 132,0.2)',
-            borderColor: 'rgb(255, 99, 132)',
-            pointBackgroundColor:'rgb(255,99,132)',
-            pointBorderColor:'#fff',
-            pointHoverBackgroundColor: '#fff',
-            pointHoverBorderColor: 'rgb(255, 99, 132)',
-            data: [10, 5, 20, 30, 45],
-            fill:true,
-        },{
-            label: '금정구 평균 상권',
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            borderColor: 'rgb(54, 162, 235)',
-            pointBackgroundColor: 'rgb(54, 162, 235)',
-            pointBorderColor: '#fff',
-            pointHoverBackgroundColor: '#fff',
-            pointHoverBorderColor: 'rgb(54, 162, 235)',
-            data: [22, 10, 15, 35, 20],
-            fill:true,
-        }]
-    };
-    const config = {
-        type: 'radar',
-        data,
-        options: {}
-    };
-    var myChart = new Chart(
-        document.getElementById('myChart'),
-        config
-    );
-    
 </script>
