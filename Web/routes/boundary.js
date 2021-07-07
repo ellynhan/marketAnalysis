@@ -9,7 +9,7 @@ const request = require('request');
 
 router.get('/', function(req, res, next) {
   var basicUrl = 'http://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_ADEMD_INFO&key=';
-  var key = 'AACE8686-5682-3F85-A55A-C99ABCD9A1EE';
+  var key = '키를 입력하세요';
   var domainUrl = '&domain=http://localhost:3000/bound'; //도메인 url 꼭 있어야 작동함. 
   var attrFilter = '&attrFilter=emd_kor_nm:like:';
   var regionCode = "|emd_cd:like:"+"41"; //emd_kor_nm:like:갈산동|emd_cd:like:41
